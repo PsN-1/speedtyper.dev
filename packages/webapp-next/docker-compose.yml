@@ -1,0 +1,77 @@
+version: "3.8"
+
+services:
+  # Database
+  db:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: speedtyper
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # Database Admin
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  # Backend API
+  backend:
+    build:
+      context: ../back-nest
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
+    environment:
+      - NODE_ENV=production
+      - PORT=80
+      - DATABASE_PRIVATE_URL=postgresql://postgres:postgres@db:5432/speedtyper
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DATABASE=speedtyper
+      - GITHUB_ACCESS_TOKEN=ghp_dummy_token_for_development_only
+      - GITHUB_CLIENT_ID=dummy_client_id_for_development
+      - GITHUB_CLIENT_SECRET=dummy_client_secret_for_development
+      - SESSION_SECRET=your-super-secret-session-key-here-make-it-long-enough
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_SERVER_URL=http://localhost:5001
+        - NEXT_PUBLIC_EXPERIMENTAL_SERVER_URL=http://localhost:5001
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SERVER_URL=http://localhost:5001
+      - NEXT_PUBLIC_EXPERIMENTAL_SERVER_URL=http://localhost:5001
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

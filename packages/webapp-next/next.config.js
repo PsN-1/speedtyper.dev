@@ -16,13 +16,15 @@ const nextConfig = {
         ? "https://speedtyper.dev"
         : "http://localhost:3001",
     serverUrl:
-      process.env.NODE_ENV === "production"
+      process.env.NEXT_PUBLIC_SERVER_URL ||
+      (process.env.NODE_ENV === "production"
         ? "https://v2.speedtyper.dev"
-        : "http://localhost:5001",
+        : "http://localhost:5001"),
     experimentalServerUrl:
-      process.env.NODE_ENV === "production"
+      process.env.NEXT_PUBLIC_EXPERIMENTAL_SERVER_URL ||
+      (process.env.NODE_ENV === "production"
         ? "https://v3.speedtyper.dev"
-        : "http://localhost:1337",
+        : "http://localhost:1337"),
   },
 };
 
