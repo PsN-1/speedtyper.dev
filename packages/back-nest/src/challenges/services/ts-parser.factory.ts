@@ -13,6 +13,7 @@ import * as cs from 'tree-sitter-c-sharp';
 import * as go from 'tree-sitter-go';
 import * as rs from 'tree-sitter-rust';
 import * as scala from 'tree-sitter-scala';
+import * as swift from 'tree-sitter-swift';
 
 const languageParserMap: { [key: string]: any } = {
   js,
@@ -28,6 +29,7 @@ const languageParserMap: { [key: string]: any } = {
   rb,
   cs,
   scala,
+  swift,
 };
 
 export const getSupportFileExtensions = () => {

@@ -14,3 +14,4 @@ ggerganov/whisper.cpp
 vitejs/vite
 lampepfl/dotty
 tinygrad/tinygrad
+apple/swift
